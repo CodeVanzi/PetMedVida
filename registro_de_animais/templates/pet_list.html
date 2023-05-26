@@ -28,7 +28,8 @@
             </tr>
         </thead>
         <tbody>
-            {% for animal in animals %}
+            {% for pet_info in pet_info_list %}
+                {% with animal=pet_info.animals %}
                 <tr>
                     <td>
                         {% if animal.ani_foto %}
@@ -46,9 +47,10 @@
                     <td>{{ animal.ani_porte }}</td>
                     <td>{{ animal.ani_castr }}</td>
                     <td>{{ animal.ani_idade }}</td>
-                    <td>{% if animal.ani_vacinado %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-times"></i>{% endif %}</td>
-                    <td>{% if animal.ani_vermifugado %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-times"></i>{% endif %}</td>
+                    <td>{% if pet_info.possui_vacina_raiva %} <i class="fas fa-check"></i>&nbsp Sim{% else %}<i class="fas fa-times"></i>&nbsp Não{% endif %}</td>
+                    <td>{% if pet_info.possui_vermifugo %} <i class="fas fa-check"></i>&nbsp Sim{% else %}<i class="fas fa-times"></i>&nbsp Não{% endif %}</td>
                 </tr>
+                {% endwith %}
             {% endfor %}
         </tbody>
     </table>
@@ -81,5 +83,4 @@ $(document).ready(function() {
 {% endif %}
 
 {% endblock %}
-
 

@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+from django.contrib.auth import get_user_model
+
 User = get_user_model()
 
 class Animal(models.Model):
@@ -33,15 +35,3 @@ class Animal(models.Model):
         if user.is_authenticated:
             return user
         return None
-
-    @property
-    def _request(self):
-        return getattr(self, '_request_cache', None)
-
-    @_request.setter
-    def _request(self, value):
-        self._request_cache = value
-
-    def __str__(self):
-        return self.ani_nome
-    

@@ -12,7 +12,8 @@ from django.contrib.auth.models import User
 from rolepermissions.checkers import has_permission
 from rolepermissions.checkers import has_role
 from django.urls import reverse
-from datetime import datetime, date
+from datetime import datetime, timedelta, date
+from django.core.exceptions import ObjectDoesNotExist
 
 def home(request):
     if request.user.is_authenticated:
@@ -152,14 +153,73 @@ def pet_list(request):
         animals = Animal.objects.all()
     else:
         animals = Animal.objects.filter(tutor=request.user)
-    return render(request, 'pet_list.html', {'animals': animals})
+
+    pet_info_list = []
+    
+    for animal in animals:
+        possui_vacina_raiva = False
+        possui_vermifugo = False
+
+        if Vacina.objects.filter(animal=animal, vac_tipo__in=['V8 ou V10']).exists():
+            vacina_recente = Vacina.objects.filter(animal=animal, vac_tipo__in=['V8 ou V10']).order_by('vac_data_admin').first()
+            if date.today() <= (vacina_recente.vac_data_admin + timedelta(days=365)):
+                possui_vacina_raiva = True
+
+        if Vacina.objects.filter(animal=animal, vac_tipo__in=['Vermífugo']).exists():    
+            vermifugo_recente = Vacina.objects.filter(animal=animal, vac_tipo__in=['Vermífugo']).order_by('vac_data_admin').first()
+            if date.today() <= (vermifugo_recente.vac_data_admin + timedelta(days=183)):
+                possui_vermifugo = True
+
+            
+        info = {
+            'animals': animal,
+            'possui_vacina_raiva': possui_vacina_raiva,
+            'possui_vermifugo': possui_vermifugo
+        }
+        pet_info_list.append(info)
+
+    context = {
+        'animals': animals,
+        'pet_info_list': pet_info_list
+    }
+
+    return render(request, 'pet_list.html', context)
 
 @login_required
 @has_permission_decorator('can_see_animal')
 def animal_profile(request, pk):
     animal = get_object_or_404(Animal, id=pk)
+    
     if has_role(request.user, 'sindico') or animal.tutor == request.user:
-        return render(request, 'animal_profile.html', {'animal': animal})
+        pet_info_list = []
+    
+        possui_vacina_raiva = False
+        possui_vermifugo = False
+
+        if Vacina.objects.filter(animal=animal, vac_tipo__in=['V8 ou V10']).exists():
+            vacina_recente = Vacina.objects.filter(animal=animal, vac_tipo__in=['V8 ou V10']).order_by('vac_data_admin').first()
+            if date.today() <= (vacina_recente.vac_data_admin + timedelta(days=365)):
+                possui_vacina_raiva = True
+
+        if Vacina.objects.filter(animal=animal, vac_tipo__in=['Vermífugo']).exists():    
+            vermifugo_recente = Vacina.objects.filter(animal=animal, vac_tipo__in=['Vermífugo']).order_by('vac_data_admin').first()
+            if date.today() <= (vermifugo_recente.vac_data_admin + timedelta(days=183)):
+                possui_vermifugo = True
+            
+        info = {
+            'animal': animal,
+            'possui_vacina_raiva': possui_vacina_raiva,
+            'possui_vermifugo': possui_vermifugo
+        }
+        pet_info_list.append(info)
+        
+        context = {
+            'animal': animal,
+            'pet_info_list': pet_info_list
+        }
+        
+        return render(request, 'animal_profile.html', context)
+    
     else:
         messages.error(request, "Você não tem permissão para ver este animal")
         return redirect('home')
