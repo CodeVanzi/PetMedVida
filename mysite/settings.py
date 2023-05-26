@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ["*"]
 # FORM SUBMISSION
 # Comment out the following line and place your railway URL, and your production URL in the array.
 
-CSRF_TRUSTED_ORIGINS = ['https://petmedvida.up.railway.app',]
+CSRF_TRUSTED_ORIGINS = ['https://petmedvida.up.railway.app', 'https://www.petmedvida.com.br', 'http://127.0.0.1', 'https://petmedvida.com.br']
 
 # Application definition
 
