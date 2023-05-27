@@ -58,7 +58,6 @@ class AddAnimalForm(forms.ModelForm):
             'ani_rga',
             'ani_anilha',
             'ani_nmchip',
-            'ani_idade',
             'ani_obs',
         ]
         labels = {
@@ -75,7 +74,6 @@ class AddAnimalForm(forms.ModelForm):
             'ani_rga': 'Registro Geral',
             'ani_anilha': 'Número de identificação da anilha (no caso de aves)',
             'ani_nmchip': 'Número de identificação do microchip (se houver)',
-            'ani_idade': 'Idade do animal em anos',
             'ani_obs': 'Observações',
         }
         widgets = {
@@ -92,7 +90,6 @@ class AddAnimalForm(forms.ModelForm):
             'ani_rga': forms.TextInput(attrs={'class': 'form-control'}),
             'ani_anilha': forms.TextInput(attrs={'class': 'form-control'}),
             'ani_nmchip': forms.TextInput(attrs={'class': 'form-control'}),
-            'ani_idade': forms.NumberInput(attrs={'class': 'form-control'}),
             'ani_obs': forms.Textarea(attrs={'class': 'form-control', 'rows': 9}),
         }
 
@@ -181,7 +178,6 @@ class UpdateAnimalForm(forms.ModelForm):
             'ani_rga',
             'ani_anilha',
             'ani_nmchip',
-            'ani_idade',
             'ani_obs',
         ]
         labels = {
@@ -198,7 +194,6 @@ class UpdateAnimalForm(forms.ModelForm):
             'ani_rga': 'Registro Geral',
             'ani_anilha': 'Número de identificação da anilha (no caso de aves)',
             'ani_nmchip': 'Número de identificação do microchip (se houver)',
-            'ani_idade': 'Idade do animal em anos',
             'ani_obs': 'Observações',
         }
         widgets = {

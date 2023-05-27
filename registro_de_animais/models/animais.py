@@ -1,6 +1,5 @@
 from django.db import models
-from django.contrib.auth import get_user_model
-
+from datetime import date
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -20,9 +19,32 @@ class Animal(models.Model):
     ani_anilha = models.CharField(max_length=50, default='', blank=True, null=True)
     ani_nmchip = models.CharField(max_length=50, default='', blank=True, null=True)
     ani_dnasc = models.DateField(blank=True, null=True)
-    ani_idade = models.IntegerField(blank=True, null=True)
     data_cadastro = models.DateField(auto_now_add=True, blank=True, null=True)
     ani_obs = models.CharField(max_length=1000, default='', blank=True, null=True)
+
+    def calculate_age(self):
+        if self.ani_dnasc:
+            today = date.today()
+            age_years = today.year - self.ani_dnasc.year
+            age_months = today.month - self.ani_dnasc.month
+
+            # Verifica se o aniversário já ocorreu neste mês
+            if today.day < self.ani_dnasc.day:
+                age_months -= 1
+
+            # Ajusta para garantir que a idade em meses seja positiva
+            if age_months < 0:
+                age_years -= 1
+                age_months += 12
+
+            return f'{age_years} anos e {age_months} meses'
+
+        return None
+
+    @property
+    def ani_idade(self):
+        return self.calculate_age()
+
 
     def save(self, *args, **kwargs):
         if not self.id:  # Se o objeto ainda não foi salvo no banco de dados
